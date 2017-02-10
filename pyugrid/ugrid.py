@@ -853,7 +853,7 @@ class UGrid(object):
             mesh.topology_dimension = 2
             mesh.node_coordinates = "{0}_node_lon {0}_node_lat".format(mesh_name)  # noqa
 
-            if self.edges is not None:
+            if self._edges is not None:
                 # Attribute required if variables will be defined on edges.
                 mesh.edge_node_connectivity = mesh_name + "_edge_nodes"
                 if self.edge_coordinates is not None:
@@ -889,7 +889,7 @@ class UGrid(object):
                                         "its three corner nodes.")
                 face_nodes.start_index = 0
 
-            if self.edges is not None:
+            if self._edges is not None:
                 nc_create_var = nclocal.createVariable
                 edge_nodes = nc_create_var(mesh_name + "_edge_nodes", IND_DT,
                                            (mesh_name + '_num_edge', 'two'),)
