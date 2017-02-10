@@ -225,6 +225,12 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None, load_data=True):
     # Load the associated data:
 
     if load_data:
+        # look if (unlimited) time dimension exists
+        timevec = None
+        for dimname, dim in nc.dimensions.items():
+            if dim.isunlimited():
+                timevec = nc.variables[dimname][:]
+                break
         # Look for data arrays -- they should have a "location" attribute.
         for name, var in nc.variables.items():
             # Data Arrays should have "location" and "mesh" attributes.
@@ -244,7 +250,7 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None, load_data=True):
             # Trick with the name: FIXME: Is this a good idea?
             name = name.lstrip(mesh_name).lstrip('_')
             uvar = UVar(name, data=var[:],
-                        location=location, attributes=attributes)
+                        location=location, attributes=attributes, time=timevec)
             grid.add_data(uvar)
 
 

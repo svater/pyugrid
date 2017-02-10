@@ -378,20 +378,24 @@ class UGrid(object):
 
         """
         # Size check:
+        if uvar.time is None:
+          len_uvar = uvar.shape[0]
+        else:
+          len_uvar = uvar.shape[1]
         if uvar.location == 'node':
-            if len(uvar.data) != len(self.nodes):
+            if len_uvar != len(self.nodes):
                 raise ValueError("length of data array must match "
                                  "the number of nodes")
         elif uvar.location == 'edge':
-            if len(uvar.data) != len(self.edges):
+            if len_uvar != len(self.edges):
                 raise ValueError("length of data array must match "
                                  "the number of edges")
         elif uvar.location == 'face':
-            if len(uvar.data) != len(self.faces):
+            if len_uvar != len(self.faces):
                 raise ValueError("length of data array must match "
                                  "the number of faces")
         elif uvar.location == 'boundary':
-            if len(uvar.data) != len(self.boundaries):
+            if len_uvar != len(self.boundaries):
                 raise ValueError("length of data array must match "
                                  "the number of boundaries")
         else:
@@ -493,7 +497,7 @@ class UGrid(object):
         :type point: array-like containing one or more points: shape (2,) for one point, shape (N, 2)
                      for more than one point.
 
-        :param method='celltree': method to use. Options are 'celltree', 'simple'. 
+        :param method='celltree': method to use. Options are 'celltree', 'simple'.
                                   for 'celltree' the celltree2d pacakge must be installed:
                                   https://github.com/NOAA-ORR-ERD/cell_tree2d/
                                   'simple' is very, very slow for large grids.

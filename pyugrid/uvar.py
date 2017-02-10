@@ -29,7 +29,7 @@ class UVar(object):
     attributes(attributes get stored in the netcdf file)
     """
 
-    def __init__(self, name, location, data=None, attributes=None):
+    def __init__(self, name, location, data=None, attributes=None, time=None):
         """
         create a UVar object
         :param name: the name of the variable (depth, u_velocity, etc.)
@@ -59,6 +59,12 @@ class UVar(object):
 
         # FixMe: we need a separate attribute dict -- we really do'nt want all this
         #        getting mixed up with the python object attributes
+        if time is None:
+            # data not time dependent.
+            self._time = None
+        else:
+            self._time = time
+
         self.attributes = {} if attributes is None else attributes
         # if the data is a netcdf variable, pull the attributes from there
         try:
@@ -124,11 +130,29 @@ class UVar(object):
                 self._cache.popitem(last=False)
         return rv
 
+    @property
+    def time(self):
+        return self._time
+
+    @time.setter
+    def time(self, time):
+        self._time = time
+
+    @time.deleter
+    def time(self):
+        self._time = None
+
     def __str__(self):
         print("in __str__, data is:", self.data)
+        if self.time is None:
+          numdatapoints = len(self.data)
+        else:
+          numdatapoints = np.shape(self.data)[1]
+          print("at times:", self.time)
+
         msg = ("UVar object: {0:s}, on the {1:s}s, and {2:d} data "
                "points\nAttributes: {3}").format
-        return msg(self.name, self.location, len(self.data), self.attributes)
+        return msg(self.name, self.location, numdatapoints, self.attributes)
 
     def __len__(self):
         return len(self.data)
