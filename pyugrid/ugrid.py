@@ -854,12 +854,14 @@ class UGrid(object):
             if self.edges is not None:
                 # Attribute required if variables will be defined on edges.
                 mesh.edge_node_connectivity = mesh_name + "_edge_nodes"
+                mesh.edge_dimension = mesh_name + "_num_edge"
                 if self.edge_coordinates is not None:
                     # Optional attribute (requires edge_node_connectivity).
                     coord = "{0}_edge_lon {0}_edge_lat".format
                     mesh.edge_coordinates = coord(mesh_name)
             if self.faces is not None:
                 mesh.face_node_connectivity = mesh_name + "_face_nodes"
+                mesh.face_dimension = mesh_name + "_num_face"
                 if self.face_coordinates is not None:
                     # Optional attribute.
                     coord = "{0}_face_lon {0}_face_lat".format
