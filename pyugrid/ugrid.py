@@ -959,17 +959,33 @@ class UGrid(object):
             node_lat.units = "degrees_north"
 
             # Write the associated data.
+            has_timedim = False
             for dataset in self.data.values():
+                if ((dataset.time is not None) and (not has_timedim)):
+                    nclocal.createDimension('time', None)
+                    timevar = nclocal.createVariable('time', NODE_DT, dimensions='time')
+                    timevar.standard_name = "time"
+                    timevar.units = "days since 0000-01-01 00:00:00"
+                    timevar[:] = dataset.time
+                    has_timedim = True
                 if dataset.location == 'node':
-                    shape = (mesh_name + '_num_node',)
+                    if (dataset.time is not None):
+                      shape = ('time', mesh_name + '_num_node',)
+                      chunksizes = (1, len(self.nodes), )
+                    else:
+                      shape = (mesh_name + '_num_node',)
+                      chunksizes = (len(self.nodes), )
                     coordinates = "{0}_node_lon {0}_node_lat".format(mesh_name)
-                    chunksizes = (len(self.nodes),)
                 elif dataset.location == 'face':
-                    shape = (mesh_name + '_num_face',)
+                    if (dataset.time is not None):
+                      shape = ('time', mesh_name + '_num_face',)
+                      chunksizes = (1, len(self.faces), )
+                    else:
+                      shape = (mesh_name + '_num_face',)
+                      chunksizes = (len(self.faces), )
                     coord = "{0}_face_lon {0}_face_lat".format
                     coordinates = (coord(mesh_name) if self.face_coordinates
                                    is not None else None)
-                    chunksizes = (len(self.faces),)
                 elif dataset.location == 'edge':
                     shape = (mesh_name + '_num_edge',)
                     coord = "{0}_edge_lon {0}_edge_lat".format
