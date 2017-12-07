@@ -249,7 +249,7 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None, load_data=True):
 
             # Trick with the name: FIXME: Is this a good idea?
             if name.startswith(mesh_name+"_"):
-              name = name[len(mesh_name):]
+                name = name[len(mesh_name)+1:]
             uvar = UVar(name, data=var[:],
                         location=location, attributes=attributes, time=timevec)
             grid.add_data(uvar)
